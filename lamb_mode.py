@@ -38,6 +38,7 @@ L. Saviot and D. B. Murray, Phys. Rev. B 79, 214101 (2009).
 from __future__ import annotations
 from dataclasses import dataclass
 import numpy as np
+from functools import lru_cache
 from scipy.special import spherical_jn
 
 
@@ -134,6 +135,7 @@ def secular_determinant(xi, mat: Material, R, l=2):
     return s_rr_A * s_rt_B - s_rr_B * s_rt_A
 
 
+@lru_cache(maxsize=None)
 def fundamental_eta(mat: Material, R, l=2, xi_lo=0.05, xi_hi=4.0, n_scan=4000):
     """Lowest root xi = eta of the secular equation (the fundamental l mode),
     by sign-change scan + bisection."""

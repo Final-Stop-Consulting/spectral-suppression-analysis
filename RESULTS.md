@@ -1,73 +1,82 @@
-# Spectral Suppression — Analytical Results (ℓ=2 coupling)
+# Results
 
-Results of the fundamental ℓ=2 Lamb tidal-coupling calculation. Every value below is reproduced by `run_analysis.py` and cross-checked by `verify.py`.
+Every number below is reproduced by `run_analysis.py` and asserted by `verify.py` (23/23 checks pass). Reference apparatus: 100 nm fused-silica sphere, T = 100 mK, integration time τ = 10⁵ s, unless noted.
 
-## Setup and assumptions
-- Free, homogeneous, **isotropic** elastic sphere; fundamental ℓ=2 spheroidal ("quadrupolar") Lamb mode.
-- Displacement from two scalar potentials (compressional j_ℓ(hr), shear-poloidal j_ℓ(kr)), with
-  `U(r)=A h j_ℓ'(hr)+B ℓ(ℓ+1) j_ℓ(kr)/r`, `V(r)=A j_ℓ(hr)/r+B[j_ℓ(kr)/r+k j_ℓ'(kr)]`, h=ω/v_l, k=ω/v_t.
-- Traction-free surface (σ_rr=σ_rθ=0 at R) → 2×2 secular determinant.
-- Reference particle: fused silica, R=100 nm, v_l=5970, v_t=3760 m/s, ρ=2200 kg/m³ (Poisson ν=0.171).
-- Long-wavelength (uniform-field) coupling assumed and justified: λ_grav≈2 cm ≫ R.
+## 1. Elastic eigenmodes (ℓ=2 fundamental, R = 100 nm)
+| Material | ν | η = ω₀R/v_t | f₀ | α |
+|---|---|---|---|---|
+| Silica | 0.17 | 2.628 | 15.7 GHz | 0.837 |
+| Silicon | 0.04 | 2.602 | 24.2 GHz | 0.820 |
+| Sapphire | 0.29 | 2.645 | 25.4 GHz | 0.846 |
+| Diamond | 0.10 | 2.615 | 50.0 GHz | 0.829 |
 
-## 1. Eigenvalue (the Lamb frequency)
-- Reduced eigenfrequency **η ≡ ω₀R/v_t = 2.6282**.
-- **ω₀ = 9.88×10¹⁰ rad/s, f₀ = 15.73 GHz**.
-- Eigenvector **A/B = −2.0559**, fixed by both boundary conditions independently (agree to 4×10⁻⁸ → the root is genuine, not a determinant artifact).
+Isotropic-equivalent elastic constants (crystals are anisotropic → frequencies good to ~10%). Eigenvector A/B = −2.056 for silica; boundary conditions vanish to machine precision; induced quadrupole verified trace-free (Q_xx = Q_yy = −Q_zz/2).
 
-## 2. Geometric factor α
-Induced symmetric-trace-free mass quadrupole δQ_ij = ρ∫(u_i x_j + x_i u_j − ⅔δ_ij x·u)d³x, mode normalized to effective mass = M, so |⟨Q^body⟩| = α M R x_zpf with x_zpf=√(ħ/2Mω₀).
+## 2. Tidal coupling and the channel ratio
+- Geometric factor **α = 0.837** (Frobenius), 0.683 (zz) — order unity, from the eigenfunction.
+- COM two-phonon Frobenius factor **D = 10** exactly (= ⅔⟨r⁴⟩ = ⅔·15), verified by direct Fock-space summation.
+- **Channel ratio |Q_body|²/|Q_COM|²** at ω_COM = 10⁵ rad/s is O(10²), convention-dependent by mode counting:
+  - single-mode (m=0 internal vs 1D COM, D=4/3): **93**
+  - full-channel (5 ℓ=2 m-modes vs 3D COM, D=10): **62**
+  - naive (D=1): 124
+  Advantage is robustly ~10²; quote the convention, not a false-precision "90."
+- Spectral ratio (ω₀/ω_COM)ⁿ: 10⁶ (n=1), **10³⁰ (n=5)**.
+- Combined advantage (single, n=5) ≈ **9×10³¹ ≈ 10³²**.
+- Rate scalings: Γ_COM ∝ ω³ (recovers Toroš), Γ_internal ∝ ω⁴.
 
-- **α = 0.837** (Frobenius / basis-independent tensor norm)
-- α = 0.683 (zz-component convention)
-- → α is order unity (~0.7–0.8), computed from the actual eigenfunction.
-- Quadrupole verified **trace-free analytically**: Q_xx=Q_yy=−Q_zz/2 (b₁=−a₁, b₂=a₂ in the angular integrals).
+## 3. First finite bound on S_EE at 16 GHz (headline result)
+`Γ_min = √(γ n̄_th/τ)`, γ = ω₀/Q (thermal-limited, no clamping loss); `S_EE^min = Γ_min ħ²/|Q_body|²`.
 
-## 3. Matrix-element ratio (coupling strength, internal vs COM)
-`R_mat = |Q^body|²/|Q^COM|² = (3/2) α² M R² ω_COM²/(ħ ω₀)` (one self-consistent Frobenius tensor convention for both channels; COM is the two-phonon ⟨2|z²|0⟩ matrix element).
+| Q | S_EE^min (s⁻³) |
+|---|---|
+| 10⁴ | 7.4×10⁷ |
+| **10⁵** | **2.33×10⁷** |
+| 10⁶ | 7.4×10⁶ |
 
-- ω_COM = 10⁵ rad/s: **R_mat ≈ 93 (≈10²)**
-- ω_COM = 10⁶ rad/s: R_mat ≈ 9.3×10³
-→ internal-mode coupling is ~2 orders of magnitude stronger *per unit noise PSD*.
+- Vacuum reference `S_EE^vac = t_Pl² ω₀⁵ = 2.74×10⁻³² s⁻³`.
+- **Gap: bound/vacuum = 8.5×10³⁸ ≈ 10³⁹.** The bound therefore does *not* test the linearized-gravity vacuum; it is the first finite constraint in the band and bounds enhanced-noise states (squeezed / thermal-graviton / large-amplitude).
 
-## 4. Spectral ratio (noise PSD, n=5)
-`S_EE(ω₀)/S_EE(ω_COM) = (ω₀/ω_COM)^n`
-- n=1 (correspondence-principle floor): 9.9×10⁵ ≈ **10⁶**
-- n=5 (graviton bath / vacuum FDT / dimensional): 9.4×10²⁹ ≈ **10³⁰**
+## 4. No-go (reach never closes the vacuum gap)
+Reach ∝ R⁻⁶, band ω₀ ∝ 1/R ⇒ reach/vacuum ratio ∝ ~1/R:
+| R | f₀ | gap/vacuum |
+|---|---|---|
+| 100 nm | 16 GHz | 8.5×10³⁸ |
+| 1 mm | 1.6 MHz | 1.4×10³⁶ |
+| 100 mm | 16 kHz | 1.4×10³⁴ |
+| 300 mm | 5.2 kHz | 4.5×10³³ |
 
-## 5. Combined advantage (ratio of decoherence/heating rates)
-`Γ_internal/Γ_COM = R_mat × (ω₀/ω_COM)^n`  (∝ ω_COM^−3, so larger at lower trap frequency)
-- **n=5, ω_COM=10⁵ rad/s: 8.75×10³¹ ≈ 10³²**
-- n=5, ω_COM=10⁶ rad/s: 8.75×10²⁸ ≈ 10²⁹
-- Across typical trap frequencies (ω_COM ≈ 3×10⁴–10⁵), the combined advantage spans **~10³²–10³³**.
+Even rebuilding a bar detector (R ≈ 30 cm, f₀ ≈ 5 kHz) leaves the gap at ~10³³: **no levitated or bar-scale mesoscopic experiment closes the near-field tidal vacuum gap.** State this — it pre-empts the fatal objection.
 
-## 6. Rate scalings (parameter-free exponents)
-- |Q^COM|² ∝ ω_COM⁻² and S_EE ∝ ω⁵ ⟹ **Γ_COM ∝ ω³** (recovers Toroš et al.).
-- |Q^body|² ∝ ω₀⁻¹ and S_EE ∝ ω⁵ ⟹ **Γ_internal ∝ ω⁴** (steeper; matrix-element and spectral advantages compound in the same direction).
+## 5. Material discriminant (fixed R, normalized to silica)
+| channel | silica | silicon | sapphire | diamond |
+|---|---|---|---|---|
+| tidal n=1 (floor) | 1.0 | 1.06 | 1.81 | 1.60 |
+| tidal n=3 | 1.0 | 2.5 | 4.7 | 16.1 |
+| tidal n=5 | 1.0 | 5.9 | 12.4 | **163** |
+| thermal loss | 1.0 | 2.6×10⁻² | 1.5×10⁻² | **2.3×10⁻⁷** |
+| gas (sudden) | 1.0 | 0.61 | 0.34 | 0.20 |
 
-## 7. Material spread (ℓ=2 fundamental, isotropic-equivalent constants — approximate for anisotropic crystals)
-| Material | ν | η | f₀ @ R=100 nm | f₀ @ matched mass | α |
-|---|---|---|---|---|---|
-| Silica | 0.17 | 2.628 | 15.7 GHz | 15.7 GHz | 0.84 |
-| Silicon | ~0.04* | 2.602 | 24.2 GHz | 24.7 GHz | 0.84 |
-| Sapphire | 0.29 | 2.645 | 25.4 GHz | 31.0 GHz | 0.84 |
-| Diamond | 0.10 | 2.615 | 50.0 GHz | 58.4 GHz | 0.84 |
+- Γ_tidal ∝ ρ ω₀^{n−1}. At n=1 this is the density ratio (tracks ρ, not f₀ — sapphire highest); for n ≥ 1 it is flat-or-rising with ω₀.
+- Intrinsic backgrounds fall steeply. log-space Pearson(tidal n=5, thermal loss) = **−0.970**; (tidal, gas) = **−0.976** — near-orthogonal.
+- **The sign of the material trend is the discriminant and rests on n ≥ 1 alone.** Diamond vs silica: tidal says diamond ~163× hotter, thermal loss says diamond ~4×10⁶× colder — a GHz mode that heats faster in diamond than silica cannot be thermal loss.
 
-*Isotropic-equivalent speeds understate Si's effective Poisson ratio; treat as order-of-magnitude. The ℓ=2 fundamentals span ~16–60 GHz, all inside the band where (for any n≥1) the tidal coupling has its maximum spectral weight.
+## 6. Cutoff threshold (silica = diamond sign inversion)
+For S_EE ∝ ωⁿ e^{−ω/ω_c}: `ω_c*(n) = (ω_di − ω_si)/ln[(ρ_di/ρ_si)(ω_di/ω_si)^{n−1}]`.
+| n | ω_c* (rad/s) |
+|---|---|
+| 1 | 4.6×10¹¹ |
+| 3 | 7.7×10¹⁰ |
+| 5 | **4.22×10¹⁰** |
+| 6 | 3.4×10¹⁰ |
 
-## Verification checklist (all passed)
-1. Secular root η=2.6282 stable to 200 bisections; consistent with the standard Lamb ℓ=2 spheroidal spectrum (η≈2.6 for low Poisson ratio).
-2. Eigenvector satisfies σ_rr=0 and σ_rθ=0 **independently** to 4×10⁻⁸.
-3. Displacement potentials are exact Navier solutions by construction; only the boundary condition is solved numerically.
-4. Induced quadrupole **trace-free analytically**; axisymmetric Q_xx=Q_yy=−Q_zz/2.
-5. α reproduced to 8 figures by two independent code paths.
-6. Γ_COM ∝ ω³ recovers the published Toroš graviton-bath scaling (independent anchor).
-7. Dimensional consistency: α, R_mat, and the combined advantage are all dimensionless.
+Earth c/r_s (r_s = 8.87 mm) = 3.38×10¹⁰ rad/s, just below ω_c*(n=5). The measured silica–diamond sign thus bounds a phenomenological cutoff scale against ~4×10¹⁰ rad/s. (Treat the cutoff phenomenologically; a corpuscular interpretation is one branch, not a premise — 𝒞_Earth ~ 10⁻⁹.)
+
+## 7. Readout ε-threshold
+Mayor et al. 2025 cooperativity C ≈ 1400 ⇒ **ε ≥ 1/√C ≈ 2.7%**. The mode stays single-phonon-resolved for ℓ=2-to-transducer overlap above ~3%. Caveats: (i) Mayor's C ≈ 1400 is the *classical* cooperativity at a 3 K operating point; the same device's quantum cooperativity is C/n̄_th ≈ 175 ⇒ threshold ≈ 8%. At 100 mK, n̄_th < 1 and the two coincide, restoring ~3%. (ii) Mayor's C is an optical readout of a *breathing* (volume-changing) mode; the ℓ=2 is volume-preserving, so a strain-coupled or polarizability-dispersive readout is required, and its overlap is the one open parameter.
 
 ## Key values
-- η = 2.628, f₀ = 15.7 GHz (silica, 100 nm)
-- α ≈ 0.84 (Frobenius)
-- R_mat ≈ 90 (≈10²) at ω_COM=10⁵ rad/s
-- Spectral suppression 10³⁰ at n=5
-- Combined internal-mode advantage ≈ 10³² (10³²–10³³ across trap frequencies)
-- Γ_internal ∝ ω⁴ vs Γ_COM ∝ ω³
+- η = 2.628, f₀ = 15.7 GHz, α = 0.84 (silica, 100 nm)
+- channel ratio ~10² (62 full / 93 single-mode); combined advantage ~10³² at n=5
+- **first finite bound S_EE^min ≈ 2.3×10⁷ s⁻³ (Q=10⁵), 10³⁹ above vacuum, gap never closes**
+- material discriminant: tidal rises (diamond 163× at n=5), backgrounds fall (Pearson −0.97); sign rests on n ≥ 1
+- cutoff threshold ω_c*(n=5) = 4.2×10¹⁰ rad/s; ε-threshold 2.7% (classical C ≈ 1400; quantum C_q ≈ 175 ⇒ ~8%; coincide at 100 mK)
